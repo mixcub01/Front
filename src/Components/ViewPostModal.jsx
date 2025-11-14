@@ -120,7 +120,7 @@ const handleLike = async () => {
     } catch (err) {
       console.error(err);
       toast.error("Like System Error");
-      // (Rollback ถ้าพัง)
+    
       setIsLiked(isLiked); 
       setLikeCount(likeCount);
     } finally {
