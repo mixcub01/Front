@@ -38,7 +38,7 @@ export default function ViewPostModal({ postId, onClose, onPostDeleted }) {
       try {
         const token = localStorage.getItem('token');
         const res = await axios.get(
-          `http://localhost:3000/api/posts/${postId}`, 
+          `https://backend-ai-uv1c.onrender.com/api/posts/${postId}`, 
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
@@ -69,7 +69,7 @@ export default function ViewPostModal({ postId, onClose, onPostDeleted }) {
     }
 
     const deletePromise = axios.delete(
-      `http://localhost:3000/api/posts/${postId}`, 
+      `https://backend-ai-uv1c.onrender.com/api/posts/${postId}`, 
       { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
     );
 
