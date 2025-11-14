@@ -1,0 +1,154 @@
+/* * MainLayout.css (ฉบับ "โปร" - ห่อด้วย @layer)
+ * 💡 กู "ลบ" * (Global Reset) ออกแล้ว
+ * 💡 กู "ห่อ" ทุกอย่างด้วย @layer components
+ */
+
+@layer components {
+  /* โครงสร้างหลัก */
+  .MainLayout {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------------- HEADER (Navbar) ---------------- */
+  .Header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px; 
+    background: #B77466; 
+    color: white;
+    position: sticky; /* 💡 ใช้ "โค้ดโปร" (sticky) */
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+    transition: padding 0.3s ease;
+  }
+
+  .Logo {
+    width: 55px; 
+    height: 55px; 
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: rgba(255, 183, 77, 0.5); 
+    transition: transform 0.3s ease;
+  }
+
+  .Logo:hover {
+    transform: scale(1.1);
+  }
+
+  /* ---------------- NAVIGATION ---------------- */
+  .nav__links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav__links li {
+    margin: 0 10px;
+  }
+
+  .nav__links li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .nav__links li a:hover {
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.1); 
+  }
+
+  /* 💡 สไตล์ของเมนู "Active" */
+  .nav__links li a.active {
+    color: #FFE1AF; 
+    font-weight: 700; 
+    background-color: rgba(0, 0, 0, 0.15); 
+  }
+
+  /* ---------------- BUTTONS (จัดระเบียบใหม่) ---------------- */
+  .btn-base {
+    padding: 9px 25px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 800;
+    transition: all 0.3s ease;
+    text-decoration: none; 
+    display: inline-block; 
+    text-align: center;
+  }
+
+  .btn-signin {
+    background-color: #FFE1AF; 
+    color: #957C62;
+  }
+
+  .btn-signin:hover {
+    background-color: #f8a28d;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+  }
+
+  .btn-signout {
+    background-color: #c00a0aff; 
+    color: #ffffff;
+  }
+
+  .btn-signout:hover {
+    background-color: #a30808; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* ---------------- MAIN CONTENT (Outlet) ---------------- */
+  .Main {
+    flex: 1; 
+    background-color: #f0f2f5; /* 💡 พื้นหลังเทา "โปร" */
+    padding: 0; 
+  }
+
+  /* ---------------- FOOTER ---------------- */
+  .footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333333; /* 💡 Footer เข้ม "โปร" */
+    color: #cccccc; 
+    font-weight: 400;
+    padding: 30px 20px; 
+    text-align: center;
+  }
+
+  /* ---------------- RESPONSIVE ---------------- */
+  @media (max-width: 768px) {
+    .Header {
+      flex-direction: column;
+      gap: 15px;
+      padding: 15px;
+    }
+    .nav__links {
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+    .nav__links li a {
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.05); 
+    }
+    .Logo {
+      margin: 0; 
+    }
+    .btn-signin, .btn-signout, .btn-base[href] {
+      width: 100%; 
+      text-align: center;
+    }
+  }
+} /* 💡 ปิด @layer components */

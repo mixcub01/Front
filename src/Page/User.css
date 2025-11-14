@@ -1,0 +1,228 @@
+/* User.css (ฉบับ "โปร" - ห่อด้วย @layer) */
+
+@layer components {
+
+  /* 1. Container หลัก (จัดให้อยู่กลางจอ) */
+  .profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+    padding: 40px 20px; 
+    width: 100%;
+    min-height: 80vh;
+    /* 💡 (พื้นหลังสีเทา... MainLayout.css มึงคุมอยู่แล้ว) */
+  }
+
+  /* 2. Profile Card (ตัวการ์ดหลัก) */
+  .profile-card {
+    width: 100%;
+    max-width: 900px; /* 💡 (หน้า Profile ควรกว้างหน่อย) */
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
+    overflow: hidden; 
+  }
+
+  /* 3. Profile Banner (ส่วนหัว) */
+  .profile-banner {
+    position: relative; 
+    height: 220px; 
+    background-size: cover;
+    background-position: center;
+    background-color: #ddd; 
+  }
+
+  /* ปุ่มอัปโหลด BANNER */
+  .upload-banner-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background-color: rgba(0, 0, 0, 0.6); 
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  .upload-banner-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  /* 4. Avatar Uploader (ส่วนรูปโปรไฟล์) */
+  .avatar-uploader {
+    position: relative;
+    width: 140px; 
+    height: 140px;
+    margin: -70px auto 0 30px; /* 💡 (เปลี่ยนจาก 'auto' เป็น '30px' ให้ชิดซ้าย) */
+    border: 4px solid #ffffff; 
+    border-radius: 50%;
+    background-color: #eee;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .upload-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 36px;
+    height: 36px;
+    background-color: #052680; 
+    color: white;
+    border: 2px solid white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .upload-btn:hover {
+    background-color: #0a3a9e;
+  }
+
+  /* 5. Profile Info (ชื่อ, username) */
+  .profile-info {
+    text-align: left; /* 💡 (ชิดซ้าย) */
+    padding: 10px 30px 10px 30px;
+  }
+  .profile-info h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #1c1e21; 
+  }
+  .profile-info span {
+    font-size: 1rem;
+    color: #65676b; 
+  }
+
+  /* 6. Profile Details (ข้อมูลติดต่อ) */
+  .profile-details {
+    padding: 15px 30px;
+    border-top: 1px solid #f0f2f5;
+  }
+  .profile-details h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1c1e21;
+  }
+  .info-item {
+    display: flex;
+    justify-content: space-between; 
+    padding: 10px 0;
+    font-size: 0.95rem;
+  }
+  .info-item strong { color: #65676b; margin-right: 15px; }
+  .info-item span { color: #1c1e21; font-weight: 500; text-align: right; }
+
+  
+  /* 💡💡 --- 7. "POST GRID" (แก้ตรงนี้!) --- 💡💡 */
+  .profile-post-grid {
+    padding: 20px 30px;
+    border-top: 1px solid #f0f2f5;
+  }
+  .profile-post-grid h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: #1c1e21;
+  }
+  
+  /* 💡 "หัวใจ" ของ Lemon8 Grid (เปลี่ยนจาก 'grid' เป็น 'column-count') */
+  .grid-container {
+    column-count: 3; /* 💡 3 คอลัมน์ (หน้า Profile) */
+    column-gap: 16px;
+  }
+  /* 💡 Responsive คอลัมน์ */
+  @media (max-width: 768px) { .grid-container { column-count: 2; } }
+  @media (max-width: 500px) { .grid-container { column-count: 1; } }
+
+  /* 💡 "Card" (โพสต์) */
+  .grid-item {
+    position: relative;
+    width: 100%;
+    margin-bottom: 16px; /* 💡 ระยะห่างแนวตั้ง */
+    break-inside: avoid; /* 💡 "ห้าม" ตัด Card ครึ่ง! */
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  .grid-item:hover img {
+    transform: scale(1.05);
+  }
+
+  /* 💡 Overlay (โชว์ Like ตอน Hover) */
+  .grid-item-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    opacity: 0; 
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* 💡 (กันเหนียว) */
+  }
+  .grid-item:hover .grid-item-overlay {
+    opacity: 1; 
+  }
+  .no-posts-message {
+    color: #8e8e8e;
+    font-size: 0.9rem;
+  }
+  
+  
+  /* 8. Profile Actions (ปุ่ม Edit) */
+  .profile-actions {
+    padding: 20px 30px;
+    text-align: right;
+    border-top: 1px solid #f0f2f5;
+  }
+  .edit-profile-btn {
+    background-color: #FFE1AF; /* 💡 สีธีมมึง */
+    color: #957C62;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .edit-profile-btn:hover {
+    background-color: #f8a28d; 
+    color: white;
+  }
+  
+  /* 💡 (CSS ปุ่ม Following... มึงก๊อปมาเผื่อไว้ก็ได้) */
+  .following-btn {
+    background-color: #efefef; 
+    color: #262626;
+    border: 1px solid #dbdbdb;
+  }
+  .following-btn:hover {
+    background-color: #dbdbdb; 
+    color: #262626;
+  }
+
+} /* 💡 ปิด @layer components */

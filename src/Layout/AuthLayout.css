@@ -1,0 +1,22 @@
+.container--login{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border-radius: 30px;
+    
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+    
+   
+}
+
+
+.auth-layout{
+    background:linear-gradient( 170deg, #cc7008ff, #f89d61ff, #cc7008ff);
+}

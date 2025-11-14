@@ -1,0 +1,243 @@
+/* Home.css (ฉบับ IG) */
+
+/* 1. โครงสร้างหลัก (2 คอลัมน์) */
+.ig-home-container {
+  display: grid;
+  /* 💡 Layout 2 คอลัมน์ (Feed 1fr, Sidebar 320px) */
+  grid-template-columns: 1fr 320px; 
+  gap: 30px;
+  
+  /* 💡 จำกัดความกว้างและจัดกลาง (แบบ IG) */
+  max-width: 935px; 
+  margin: 30px auto; /* 💡 จัดกลาง (ห่างจาก Navbar มึง 30px) */
+  padding: 0 10px;
+}
+
+/* 2. ส่วน Feed (ซ้าย) */
+.ig-feed {
+  width: 100%;
+  max-width: 600px; /* 💡 Feed ของ IG จะไม่กว้างมาก */
+  margin: 0 auto; /* 💡 จัดกลางในพื้นที่ 1fr */
+}
+
+/* 3. Stories */
+.stories-tray {
+  display: flex;
+  gap: 15px;
+  padding: 15px;
+  background-color: #ffffff;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  overflow-x: auto; /* 💡 ถ้า story เยอะให้เลื่อนข้างได้ */
+}
+
+.story-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #eee;
+  border: 2px solid #c9c9c9;
+  flex-shrink: 0; /* 💡 ไม่ให้วงกลมหด */
+}
+
+/* 4. Post Card (แบบ IG) */
+.ig-post-card {
+  background-color: #ffffff;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  overflow: hidden; /* 💡 กันรูปทะลุขอบ */
+}
+
+.ig-post-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.ig-post-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.ig-post-username {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.ig-post-menu {
+  margin-left: auto;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ig-post-media {
+  width: 100%;
+  border-top: 1px solid #efefef;
+  border-bottom: 1px solid #efefef;
+}
+
+.ig-post-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ig-post-actions {
+  padding: 8px 16px;
+}
+
+.action-icon {
+  font-size: 1.5rem; /* 💡 ใช้ Emoji หรือ React-Icons แทนได้ */
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.ig-post-likes {
+  padding: 0 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.ig-post-caption {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+.ig-view-comments {
+  padding: 0 16px 8px 16px;
+  font-size: 0.9rem;
+  color: #8e8e8e;
+  cursor: pointer;
+}
+
+.ig-add-comment {
+  padding: 12px 16px;
+  border-top: 1px solid #efefef;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.ig-add-comment input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.ig-add-comment span {
+  color: #0095f6;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+/* 5. Sidebar ขวา (Suggestions) */
+.ig-sidebar {
+  /* 💡 ทำให้ Sidebar "ติด" อยู่กับที่ แม้จะเลื่อน Feed */
+  position: sticky;
+  top: 100px; /* 💡 100px คือเผื่อ Navbar (Header) ของมึง */
+  height: fit-content;
+}
+
+.ig-sidebar-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.ig-sidebar-profile img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+
+.ig-sidebar-userinfo {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.ig-sidebar-userinfo strong { font-size: 0.9rem; }
+.ig-sidebar-userinfo span { font-size: 0.85rem; color: #8e8e8e; }
+
+.ig-switch-btn, .ig-follow-btn {
+  background: transparent;
+  border: none;
+  color: #0095f6;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.ig-sidebar-suggestions {
+  margin-bottom: 20px;
+}
+
+.suggestions-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.suggestions-header span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #8e8e8e;
+}
+.suggestions-header a {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #262626;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.suggestion-item img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.ig-sidebar-footer {
+  font-size: 0.75rem;
+  color: #c7c7c7;
+}
+.ig-sidebar-footer p { margin: 5px 0; }
+
+/* ---------------- RESPONSIVE (แบบ IG) ---------------- */
+@media (max-width: 935px) {
+  .ig-home-container {
+    /* 💡 ถ้าจอเล็กกว่า 935px ให้ Sidebar ขวาหายไป */
+    grid-template-columns: 1fr;
+  }
+  .ig-sidebar {
+    display: none;
+  }
+  .ig-feed {
+    max-width: 600px; /* 💡 Feed ยังคงความกว้างเท่าเดิม */
+  }
+}
+
+@media (max-width: 600px) {
+  .ig-home-container {
+    margin: 10px auto; /* 💡 ลดระยะห่างบนมือถือ */
+  }
+  .stories-tray, .ig-post-card {
+    /* 💡 บนมือถือ IG จะไม่มีขอบ (border) */
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid #dbdbdb;
+  }
+}
