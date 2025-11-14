@@ -120,8 +120,7 @@ export default function ConfirmDeleteModal({ onConfirm, onClose, loading }) {
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  มึงแน่ใจนะ? ลบแล้วลบเลยนะเว้ย!
-                  กู้คืนไม่ได้นะจารย์!
+         ยืนยันการลบโพสต์
                 </p>
               </div>
             </div>
