@@ -49,7 +49,7 @@ export default function CreatePostModal({ onClose, onPostCreated }) { 
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(
-        "http://localhost:3000/api/posts", 
+        "https://backend-ai-uv1c.onrender.com/api/posts", 
         formData, 
         { headers: { 
             Authorization: `Bearer ${token}`,

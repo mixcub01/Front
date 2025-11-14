@@ -35,7 +35,7 @@ export default function UserProfile() {
       try {
         const token = localStorage.getItem('token');
         const res = await axios.get(
-          `http://localhost:3000/api/users/${userId}`,
+          `https://backend-ai-uv1c.onrender.com/api/users/${userId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
@@ -65,7 +65,7 @@ export default function UserProfile() {
     try {
       const token = localStorage.getItem("token");
       await axios.put( 
-        `http://localhost:3000/api/users/follow/${userId}`, 
+        `https://backend-ai-uv1c.onrender.com/api/users/follow/${userId}`, 
         {}, { headers: { Authorization: `Bearer ${token}` } }
       );
       

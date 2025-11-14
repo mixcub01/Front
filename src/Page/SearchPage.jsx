@@ -31,7 +31,7 @@ export default function SearchPage() {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.get(
-          `http://localhost:3000/api/search?q=${query}`, // ⬅️ "ยิง" API ค้นหา
+          `https://backend-ai-uv1c.onrender.com/api/search?q=${query}`, // ⬅️ "ยิง" API ค้นหา
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setPosts(res.data);

@@ -75,7 +75,7 @@ function Register() {
     setSuccessMsg('');
 
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/register', formData);
+      const response = await axios.post('https://backend-ai-uv1c.onrender.com/api/auth/register', formData);
       
       setSuccessMsg(response.data.message || "Registration successful!");
       setFormData({ username: '', fullName: '', email: '', password: '' }); // reset form

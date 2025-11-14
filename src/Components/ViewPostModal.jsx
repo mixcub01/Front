@@ -111,7 +111,7 @@ const handleLike = async () => {
       
       // 💡💡 --- นี่คือ "ตัวแก้" (สลับ Path) --- 💡💡
       await axios.put(
-        `http://localhost:3000/api/posts/${postId}/like`, // ⬅️ (แก้เป็น '/:id/like')
+        `https://backend-ai-uv1c.onrender.com/api/posts/${postId}/like`, // ⬅️ (แก้เป็น '/:id/like')
         {}, 
         { headers: { Authorization: `Bearer ${token}` } }
       );

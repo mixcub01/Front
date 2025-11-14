@@ -33,7 +33,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/login", {
+      const res = await axios.post("https://backend-ai-uv1c.onrender.com/api/auth/login", {
         username,
         password,
       });
@@ -41,7 +41,7 @@ function Login() {
       localStorage.setItem("token", token); 
 
       // fetch user info หลัง login
-      const me = await axios.get("http://localhost:3000/api/protected/me", {
+      const me = await axios.get("https://backend-ai-uv1c.onrender.com/api/protected/me", {
         headers: { Authorization: `Bearer ${token}` }
       });
 

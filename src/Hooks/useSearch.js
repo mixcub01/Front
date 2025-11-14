@@ -20,11 +20,11 @@ export default function useSearch(query) {
         
         // 💡💡 1. "ยิง" 2 API "พร้อมกัน" (ท่า "โปร") 💡💡
         const postPromise = axios.get(
-          `http://localhost:3000/api/search/suggestions?q=${query}`, // ⬅️ API (1) หา Post
+          `https://backend-ai-uv1c.onrender.com/api/search/suggestions?q=${query}`, // ⬅️ API (1) หา Post
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const userPromise = axios.get(
-          `http://localhost:3000/api/users/search/suggestions?q=${query}`, // ⬅️ API (2) หา User
+          `https://backend-ai-uv1c.onrender.com/api/users/search/suggestions?q=${query}`, // ⬅️ API (2) หา User
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

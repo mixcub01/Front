@@ -28,7 +28,7 @@ export default function Home() {
           setError("Please log in to view posts.");
           return;
         }
-        const res = await axios.get("http://localhost:3000/api/posts", {
+        const res = await axios.get("https://backend-ai-uv1c.onrender.com/api/posts", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setPosts(res.data); 
