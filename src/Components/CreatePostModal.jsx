@@ -29,7 +29,7 @@ export default function CreatePostModal({ onClose, onPostCreated }) {
 
     // เช็คประเภทไฟล์เบื้องต้น (กันพวกไฟล์แปลกๆ)
     if (!selectedFile.type.startsWith('image/') && !selectedFile.name.match(/\.(jpg|jpeg|png|gif|heic)$/i)) {
-       setError("ต้องเป็นไฟล์รูปภาพเท่านั้นนะจารย์!");
+       setError("ต้องเป็นไฟล์รูปภาพเท่านั้น!");
        setFile(null);
        setPreview(null);
        return;
@@ -53,15 +53,15 @@ export default function CreatePostModal({ onClose, onPostCreated }) {
       setError(null);
 
     } catch (err) {
-      console.error("บีบอัดรูปพังว่ะ:", err);
-      setError("รูปนี้มีปัญหา ลองรูปอื่นดูดิจารย์");
+      console.error("บีบอัดรูปไม่ได้", err);
+      setError("รูปนี้มีปัญหา");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file || !text.trim()) { 
-      setError("มึงต้องใส่ทั้ง 'รูป' และ 'ข้อความ' นะจารย์!");
+      setError(" 'รูป' และ 'ข้อความ'!");
       return;
     }
     setLoading(true);
@@ -91,7 +91,7 @@ export default function CreatePostModal({ onClose, onPostCreated }) {
     } catch (err) {
       console.error(err);
       // Mock error message สำหรับ preview
-      setError(err.response?.data?.message || "อัปโหลดพังว่ะ (Preview Mode อาจเชื่อมต่อ Server ไม่ได้)");
+      setError(err.response?.data?.message || "อัปโหลดไม่สําเร็จ (Preview Mode อาจเชื่อมต่อ Server ไม่ได้)");
       setLoading(false);
     }
   };
