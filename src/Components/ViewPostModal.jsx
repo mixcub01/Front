@@ -86,7 +86,7 @@ export default function ViewPostModal({ postId, onClose, onPostDeleted }) {
         },
         error: (err) => {
           setIsDeleting(false); 
-          return err.response?.data?.message || 'ลบพังว่ะ!';
+          return err.response?.data?.message || 'ลบไม่สําเร็จ';
         }
       }
     );
