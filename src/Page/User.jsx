@@ -54,7 +54,7 @@ function ProfilePage({ user, setUser }) {
         if (!targetId) return; 
 
         const res = await axios.get(
-          `http://localhost:3000/api/users/${targetId}`,
+          `https://back-yzvd.onrender.com/api/users/${targetId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
@@ -87,7 +87,7 @@ function ProfilePage({ user, setUser }) {
       const token = localStorage.getItem("token");
       
       await axios.put( 
-        `http://localhost:3000/api/users/follow/${getSafeId(profile)}`, 
+        `https://back-yzvd.onrender.com/api/users/follow/${getSafeId(profile)}`, 
         {}, { headers: { Authorization: `Bearer ${token}` } }
       );
       
@@ -127,7 +127,7 @@ function ProfilePage({ user, setUser }) {
 
     try {
       const token = localStorage.getItem('token');
-      const endpoint = `http://localhost:3000/api/upload/${type}`; 
+      const endpoint = `https://back-yzvd.onrender.com/api/upload/${type}`; 
       
       // 💡 แก้ 2: เปลี่ยนจาก put เป็น post เพราะ Backend มึงใช้ router.post()
       const res = await axios.post(
