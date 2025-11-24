@@ -10,7 +10,7 @@ import { Toaster } from 'react-hot-toast';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <UserProvider> 
-      {/* 👇 แก้บรรทัดนี้! ใส่ basename="/Front" (ชื่อ Repo มึง) */}
+     
       <BrowserRouter basename="/Front">
         <App />
         

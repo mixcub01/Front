@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion'; 
 import { Outlet, Link, NavLink, useNavigate } from "react-router-dom";
-
+import logoImage from '../assets/log0.png'
 import useSearch from '../Hooks/useSearch';
 import SearchSuggestions from '../Components/SearchSuggestions';
 import { useUser } from "../context/UserContext";
@@ -104,7 +104,7 @@ export default function MainLayout() {
             <Link to="/" className="flex-shrink-0 group relative">
               <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
               <img 
-                src="/img/log0.png" 
+                src={logoImage} 
                 alt="logo" 
                 className={`relative rounded-full transition-all duration-500 object-cover border-2 border-white/10
                   ${scrolled ? 'w-10 h-10' : 'w-12 h-12'}
