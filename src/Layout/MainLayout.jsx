@@ -211,21 +211,42 @@ export default function MainLayout() {
               )}
             </div>
 
+            {/* 🔥🔥🔥 Mobile Action Group (Notification + Burger) 🔥🔥🔥 */}
+            <div className="flex items-center md:hidden gap-2">
+              
+              {/* ✅ 5.1 Mobile Notification Bell (เพิ่มใหม่ตรงนี้!) */}
+              {user && (
+                <button 
+                  onClick={() => setIsNotiModalOpen(true)}
+                  className="p-2 rounded-full text-slate-400 hover:text-white transition-colors relative"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  </svg>
+                  {/* Mobile Badge */}
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-[#0f172a]"></span>
+                  )}
+                </button>
+              )}
 
-            {/* 5. Mobile Burger Button */}
-            <button
-              ref={burgerButtonRef}
-              className="md:hidden p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors relative z-50"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                {isMobileMenuOpen ? (
-                  <><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></>
-                ) : (
-                  <><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></>
-                )}
-              </svg>
-            </button>
+              {/* 5.2 Mobile Burger Button */}
+              <button
+                ref={burgerButtonRef}
+                className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors relative z-50"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {isMobileMenuOpen ? (
+                    <><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></>
+                  ) : (
+                    <><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></>
+                  )}
+                </svg>
+              </button>
+            </div>
+            
         </div>
 
         {/* 6. Mobile Menu (Glassmorphism Dropdown) */}
@@ -256,19 +277,19 @@ export default function MainLayout() {
 
                 {/* Mobile Nav Links */}
                 <nav className="flex flex-col gap-2">
-                    {['Home', 'Recipe', 'Chat', 'About', 'Me'].map((item) => (
-                        <NavLink 
-                            key={item}
-                            to={item === 'Home' ? '/' : item === 'Me' ? '/User' : `/${item}`} 
-                            onClick={handleMobileLinkClick}
-                            className={({ isActive }) => `
-                                px-4 py-3 rounded-xl text-lg font-medium transition-all
-                                ${isActive ? 'bg-sky-500/10 text-sky-400' : 'text-slate-400 hover:text-white hover:bg-white/5'}
-                            `}
-                        >
-                            {item}
-                        </NavLink>
-                    ))}
+                  {['Home', 'Recipe', 'Chat', 'About', 'Me'].map((item) => (
+                      <NavLink 
+                          key={item}
+                          to={item === 'Home' ? '/' : item === 'Me' ? '/User' : `/${item}`} 
+                          onClick={handleMobileLinkClick}
+                          className={({ isActive }) => `
+                              px-4 py-3 rounded-xl text-lg font-medium transition-all
+                              ${isActive ? 'bg-sky-500/10 text-sky-400' : 'text-slate-400 hover:text-white hover:bg-white/5'}
+                          `}
+                      >
+                          {item}
+                      </NavLink>
+                  ))}
                 </nav>
 
                 {/* Mobile Auth Buttons */}
