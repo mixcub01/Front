@@ -21,7 +21,7 @@ export default function PostMenu({ onDelete }) {
   // 💡 4. ฟังก์ชัน "กดลบ" (ใน Dropdown)
   const handleDeleteClick = () => {
     setIsOpen(false); // 1. ปิด Dropdown
-    onDelete();       // 2. "ตะโกน" บอกตัวแม่ (ViewPostModal) ให้เริ่มลบ!
+    onDelete();       
   };
 
   return (
@@ -60,7 +60,7 @@ export default function PostMenu({ onDelete }) {
             >
               Delete Post
             </button>
-            {/* (มึงจะเพิ่มปุ่ม 'Edit' อะไรก็ยัดไว้ตรงนี้) */}
+            {}
           </motion.div>
         )}
       </AnimatePresence>

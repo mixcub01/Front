@@ -8,11 +8,13 @@ import GoogleCallback from "./Layout/GoogleCallback.jsx";
 
 import AuthLayout from "./Layout/AuthLayout";
 import MainLayout from "./Layout/MainLayout";
-import Recommend from "./Page/Recommend.jsx";
+import Chat from "./Page/Chat.jsx";
 import User from "./Page/User.jsx";
-import About from "./Page/About.jsx";
+import Dashboard from "./Page/Dashboard.jsx";
 import UserProfile from "./Page/UserProfile.jsx"; 
-import SearchPage from "./Page/SearchPage.jsx"; //
+import SearchPage from "./Page/SearchPage.jsx"; 
+// เพิ่มเข้ามาใหม่
+import RecipeGenerator from "./Page/RecipeGenerator.jsx";
 
 function App() {
   return (
@@ -20,11 +22,12 @@ function App() {
       {/* layout สำหรับ main */}
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Home />} />
-        <Route path="recommended" element={<Recommend />} />
+        <Route path="chat" element={<Chat />} />
         <Route path="user" element={<User />} />
-        <Route path="about" element={<About />} />
+        <Route path="dashboard" element={<Dashboard />} />
         <Route path="/profile/:userId" element={<UserProfile />} />    
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/recipe" element={<RecipeGenerator />} />
       </Route>
 
    

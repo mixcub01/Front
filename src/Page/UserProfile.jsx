@@ -1,10 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useUser } from '../context/UserContext';
-import './User.css'; // 💡 1. ต้องมี CSS
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import toast from 'react-hot-toast'; 
 
-export default function UserProfile() {
+// 💡 NOTE: ต้อง Import Files ที่เกี่ยวข้อง
+import { useUser } from '../context/UserContext'; 
+import ViewPostModal from '../Components/ViewPostModal';
+import FollowListModal from '../Components/FollowListModal';
+
+
+// ----------------------------------------------------------------------
+// 💡 Helper: ฟังก์ชันแกะ ID อย่างปลอดภัย (กันเหนียวทั้ง _id และ id)
+const getSafeId = (obj) => {
+    if (!obj) return null;
+    if (typeof obj === 'string') return obj;
+    return obj._id || obj.id || null;
+};
+
+// ----------------------------------------------------------------------
+// 🔥 Profile Page Component (ตัวที่ถูก Render จริงๆ)
+// ----------------------------------------------------------------------
+function ProfilePage({ user, setUser }) { 
   const { userId } = useParams(); 
   const { user: loggedInUser, loading: contextLoading } = useUser(); 
   const navigate = useNavigate();
@@ -13,37 +29,38 @@ export default function UserProfile() {
   const [profileLoading, setProfileLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 💡 2. เอากลับมา! (State สำหรับปุ่ม)
+  const [viewPostId, setViewPostId] = useState(null);
+  const [modalView, setModalView] = useState(null); // 'followers' หรือ 'following'
+  
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false); 
 
+
+  // 💡 1. Logic ดึงข้อมูลโปรไฟล์ (เมื่อ ID เปลี่ยน)
   useEffect(() => {
-    // (เช็ค 1: ถ้า Context "แม่" ยังโหลดไม่เสร็จ... "รอ"!)
-    if (contextLoading) {
-      return; 
-    }
+    if (contextLoading) return;
     
-    // (เช็ค 2: พอ Context โหลดเสร็จ... ค่อยเช็คว่า ID ตรงกันมั้ย)
-    if (loggedInUser && userId === loggedInUser.id) {
-      navigate('/user'); 
+    // Check 1: ถ้าเป็นโปรไฟล์ตัวเอง -> เด้งไปหน้า /user
+    if (loggedInUser && userId === loggedInUser._id) { 
+      navigate('/user', { replace: true }); 
       return;
     }
 
-    // (เช็ค 3: ถ้า Context โหลดเสร็จ และ ID ไม่ตรง... ค่อย "เริ่ม" โหลดโปรไฟล์)
     const fetchUserProfile = async () => {
       setProfileLoading(true); 
       try {
         const token = localStorage.getItem('token');
+        // 💡 Backend Route GET /api/users/:id
         const res = await axios.get(
-          `https://backend-ai-uv1c.onrender.com/api/users/${userId}`,
+          `http://localhost:3000/api/users/${userId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
         setProfile(res.data); 
 
-        // 💡 3. "เช็ค" ว่ามึง Follow เขาอยู่รึเปล่า (ตอนโหลด)
+       
         if (loggedInUser && res.data.followers) {
-          setIsFollowing(res.data.followers.some(followerId => followerId === loggedInUser.id));
+          setIsFollowing(res.data.followers.some(followerId => followerId === loggedInUser._id));
         }
         
       } catch (err) { 
@@ -55,103 +72,135 @@ export default function UserProfile() {
     };
 
     fetchUserProfile(); 
-  }, [userId, loggedInUser, contextLoading, navigate]); // 💡 (Dependency ถูกต้อง)
+  }, [userId, loggedInUser, contextLoading, navigate]); 
   
-  // 💡💡 --- นี่คือ "ตัวแก้" (ฉบับ "โปร" + "กันเหนียว") --- 💡💡
+  
+  // 💡 2. Logic Follow / Unfollow
   const handleFollow = async () => {
     if (followLoading || !loggedInUser) return; 
-    setFollowLoading(true); // 1. เริ่ม Loading...
+    setFollowLoading(true);
 
     try {
       const token = localStorage.getItem("token");
+      
       await axios.put( 
-        `https://backend-ai-uv1c.onrender.com/api/users/follow/${userId}`, 
+        `http://localhost:3000/api/users/follow/${profile._id}`, 
         {}, { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      // 💡 2. "โกง" UI (Success)
+      // 💡 อัปเดต UI ทันที (Optimistic Update)
       setIsFollowing(!isFollowing); 
       
-      // 💡 3. "อัปเดตเลข" (แบบ "กันเหนียว" ไม่ให้พัง)
       setProfile(prevProfile => {
-        // ⬇️ "เช็ค" ก่อนว่า 'followers' มีจริงมั้ย? ถ้าไม่ -> ใช้ [] (Array ว่าง)
         const currentFollowers = prevProfile.followers || []; 
-
-        if (isFollowing) {
-          // (กำลังจะ Unfollow)
-          return {
-            ...prevProfile,
-            followers: currentFollowers.filter(id => id !== loggedInUser.id) // ⬅️ ปลอดภัยแล้ว
-          };
-        } else {
-          // (กำลังจะ Follow)
-          return {
-            ...prevProfile,
-            followers: [...currentFollowers, loggedInUser.id] // ⬅️ ปลอดภัยแล้ว
-          };
-        }
+        const newFollowers = isFollowing
+          ? currentFollowers.filter(id => id !== loggedInUser._id) // Unfollow: เอา ID ออก
+          : [...currentFollowers, loggedInUser._id]; // Follow: เพิ่ม ID เข้า
+        
+        return { ...prevProfile, followers: newFollowers };
       });
       
-      setFollowLoading(false); // 💡 4. "ปลดล็อก" ปุ่ม (ตอน Success)
+      toast.success(isFollowing ? "Unfollowed!" : "Followed!", {duration: 1500});
 
     } catch (err) {
-      setFollowLoading(false); // 💡 5. "ปลดล็อก" ปุ่ม (ตอน Error)
-      alert(err.response?.data?.message || "Follow พังว่ะ!");
-    } 
+      setFollowLoading(false); 
+      toast.error(err.response?.data?.message || "Follow พังว่ะ!");
+    } finally {
+      setFollowLoading(false);
+    }
   };
 
 
-
+  // 💡 3. ฟังก์ชันลบโพสต์ (ต้องถูกเรียกจาก ViewPostModal)
   const deletePostFromProfile = (deletedPostId) => {
-    // (อัปเดต Context "แม่" ให้ฉลาด)
-    setUser(prevUser => ({
-      ...prevUser,
-      posts: prevUser.posts.filter(post => post._id !== deletedPostId)
+    // อัปเดต State Profile (Posts ที่โชว์ใน Grid)
+    setProfile(prevProfile => ({
+      ...prevProfile,
+      posts: prevProfile.posts.filter(post => post._id !== deletedPostId)
     }));
+    setViewPostId(null);
   };
 
 
   // 💡 --- (Render Logic) ---
-  if (contextLoading) return <p className="text-center p-10">Loading User Context...</p>; 
-  if (profileLoading) return <p className="text-center p-10">Loading profile...</p>; 
-  if (error) return <p className="text-center p-10 text-red-500">{error}</p>;
-  if (!profile) return <p className="text-center p-10">User not found.</p>; 
+  if (contextLoading || profileLoading) return <p className="text-center p-10 text-gray-400 pt-32">Loading profile...</p>; 
+  if (error) return <p className="text-center p-10 text-red-500 pt-32">{error}</p>;
+  if (!profile) return <p className="text-center p-10 text-gray-400 pt-32">User not found.</p>; 
 
-  // 💡 (หน้าโปรไฟล์... ที่ "ข้อมูลครบ")
+  
+  // 💡 ตัวแปรสำหรับคน Login (ใช้ในปุ่ม)
+  const isViewingOwnProfile = loggedInUser && getSafeId(profile) === loggedInUser._id;
+
+
   return (
-    // (กูเปลี่ยนไปใช้ Tailwind 100% นะ... มึงลบ User.css ทิ้งไปเลย)
-    <div className="w-full max-w-4xl mx-auto p-4 md:p-8">
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    // 💡 3. "Card" หลัก (Dark Mode Style)
+    <div className="w-full max-w-5xl mx-auto p-4 md:p-8 text-gray-100">
+      <div className="bg-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-gray-800">
         
-        {/* Banner + Avatar (แบบ "โปร") */}
+        {/* 4. Banner + Avatar (แบบ "โปร" - Overlap) */}
         <div className="relative">
+          {/* Banner */}
           <div 
-            className="h-48 md:h-64 bg-zinc-200 bg-cover bg-center"
-            style={{ backgroundImage: `url(${profile.banner || '/img/default_banner.jpg'})` }}
-          ></div>
+            className="h-48 md:h-64 bg-zinc-800 bg-cover bg-center group relative overflow-hidden" 
+            style={{ backgroundImage: `url(${profile.banner || 'https://images.unsplash.com/photo-1549692520-2195f162776c?w=1200&auto=format&fit=crop'})` }}
+          >
+            {/* Dark Overlay (for style and contrast) */}
+            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-300"></div>
+            
+            {/* ปุ่มแก้ Banner (ถ้าเป็นของตัวเอง) */}
+            {isViewingOwnProfile && (
+              <label 
+                htmlFor="upload-banner" 
+                className="absolute bottom-4 right-4 bg-white/10 text-white p-2 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:scale-110 backdrop-blur-sm"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+              </label>
+            )}
+            <input type="file" id="upload-banner" accept="image/*" className="hidden" onChange={(e) => handleImageChange(e, 'banner')} />
+          </div>
+
+          {/* Avatar (Overlap) */}
           <div className="absolute bottom-0 left-8 transform translate-y-1/2">
-            <img 
-              src={profile.avatar || '/img/avatar.png'} 
-              alt="User Avatar" 
-              className="w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-white shadow-md"
-            />
+            <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full border-4 border-gray-900 shadow-xl group ring-4 ring-sky-500/0 hover:ring-sky-500/30 transition-all">
+              <img 
+                src={profile.avatar || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'} 
+                alt="User Avatar" 
+                className="w-full h-full object-cover rounded-full"
+              />
+              {/* ปุ่มแก้ Avatar */}
+              {isViewingOwnProfile && (
+                <label 
+                  htmlFor="upload-avatar"
+                  className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                </label>
+              )}
+              <input type="file" id="upload-avatar" accept="image/*" className="hidden" onChange={(e) => handleImageChange(e, 'avatar')} />
+            </div>
           </div>
         </div>
-
-        {/* Info + ปุ่ม (ย้ายปุ่มมาไว้ข้างบน) */}
-        <div className="flex justify-between items-start p-6 pt-20 md:pt-24">
+        
+        {/* 5. Info + ปุ่ม "Edit/Follow" */}
+        <div className="flex flex-col md:flex-row justify-between items-start p-6 pt-20 md:pt-8 md:pl-48">
           <div className="flex-1">
-            <h2 className="text-3xl font-bold text-zinc-800">{profile.fullName}</h2>
-            <span className="text-md text-zinc-500">@{profile.username}</span>
+            <h2 className="text-3xl font-bold text-white">{profile.fullName}</h2>
+            <span className="text-lg text-sky-400">@{profile.username}</span>
+            <p className="text-sm text-gray-400 mt-2">{profile.email}</p>
           </div>
           
-          {/* 💡 "ปุ่ม" (ฉบับ "โปร") */}
-          <div className="mt-2">
-            <button 
-                className={`py-2 px-6 rounded-lg font-semibold transition-all duration-200
+          {/* 🔥 ปุ่ม Follow/Edit */}
+          <div className="mt-4 md:mt-0">
+            {isViewingOwnProfile ? (
+              <button className="py-2 px-5 rounded-full font-bold bg-zinc-700 text-white hover:bg-zinc-600 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md shadow-zinc-700/30">
+                Edit Profile
+              </button>
+            ) : (
+              <button 
+                className={`py-2 px-6 rounded-full font-semibold transition-all duration-200
                   ${isFollowing 
-                    ? 'bg-zinc-200 text-zinc-800 hover:bg-zinc-300' // ⬅️ Style "Following"
-                    : 'bg-blue-500 text-white hover:bg-blue-600' // ⬅️ Style "Follow"
+                    ? 'bg-zinc-700 text-white hover:bg-zinc-600 border border-zinc-500' // ⬅️ Style "Following"
+                    : 'bg-sky-600 text-white hover:bg-sky-500 shadow-lg shadow-sky-500/20' // ⬅️ Style "Follow"
                   }
                   ${followLoading ? 'opacity-50 cursor-not-allowed' : ''}
                 `}
@@ -159,52 +208,98 @@ export default function UserProfile() {
                 disabled={followLoading}
               >
                 {followLoading ? '...' : (isFollowing ? 'Following' : 'Follow')}
-            </button>
+              </button>
+            )}
           </div>
         </div>
         
-         {/* Details (ตัวเลข) */}
-         <div className="flex gap-8 px-6 pb-4 border-b border-zinc-200">
-            <div className="text-sm">
-                <strong className="text-zinc-800">{profile.posts ? profile.posts.length : 0}</strong>
-                <span className="text-zinc-500 ml-1">Posts</span>
-            </div>
-            <div className="text-sm">
-                <strong className="text-zinc-800">{profile.followers ? profile.followers.length : 0}</strong>
-                <span className="text-zinc-500 ml-1">Followers</span>
-            </div>
-            <div className="text-sm">
-                <strong className="text-zinc-800">{profile.following ? profile.following.length : 0}</strong>
-                <span className="text-zinc-500 ml-1">Following</span>
-            </div>
-         </div>
+        {/* 6. "Stats" (Posts / Followers / Following) */}
+        <div className="flex gap-6 md:gap-10 px-6 md:px-8 pb-4 border-b border-gray-800">
+          <div className="text-center md:text-left">
+            <strong className="block text-2xl font-bold text-white">{profile.posts ? profile.posts.length : 0}</strong>
+            <span className="text-sm text-gray-400">Posts</span>
+          </div>
+          <div className="text-center md:text-left cursor-pointer" onClick={() => setModalView('followers')}>
+            <strong className="block text-2xl font-bold text-white">{profile.followers ? profile.followers.length : 0}</strong>
+            <span className="text-sm text-sky-400 hover:underline">Followers</span>
+          </div>
+          <div className="text-center md:text-left cursor-pointer" onClick={() => setModalView('following')}>
+            <strong className="block text-2xl font-bold text-white">{profile.following ? profile.following.length : 0}</strong>
+            <span className="text-sm text-sky-400 hover:underline">Following</span>
+          </div>
+        </div>
 
-         {/* Post Grid (ต้องขึ้น) */}
-         <div className="p-4 md:p-6">
-            <h3 className="text-lg font-semibold mb-4 text-zinc-800">Posts</h3>
-            <div className="grid grid-cols-3 gap-1 md:gap-4">
-                {profile.posts && profile.posts.length > 0 ? (
-                    profile.posts.map(post => (
-                        <div className="grid-item" key={post._id}>
-    <img src={post.media} alt={post.text} className="..."/>
-    
-    {/* 💡💡 --- นี่คือ "ตัวแก้" --- 💡💡 */}
-    <div className={`
-        absolute inset-0 bg-black/40 flex justify-center items-center 
-        transition-opacity duration-300
-        ${/* 1. ถ้า "ไม่" Hover -> "ซ่อน" (opacity-0) และ "ไม่ขวางเมาส์" (pointer-events-none) */''}
-        opacity-0 group-hover:opacity-100 pointer-events-none
-    `}>
-      <span className="text-white font-bold text-lg">❤️ {post.likes}</span>
-    </div>
-</div>
-                    ))
-                ) : (
-                    <p className="text-zinc-500 col-span-3 text-sm">User has no posts yet.</p>
-                )}
-            </div>
-         </div>
-      </div>
-    </div>
+        {/* 7. Post Grid (แบบ IG) */}
+        <div className="p-4 md:p-6">
+          <h3 className="text-xl font-bold mb-4 text-white">Posts by {profile.username}</h3>
+          <div className="grid grid-cols-3 gap-1 md:gap-4">
+            {profile.posts && profile.posts.length > 0 ? (
+              profile.posts.map(post => (
+                <div 
+                  className="aspect-square bg-gray-800 rounded-lg overflow-hidden cursor-pointer group relative shadow-md hover:shadow-sky-500/20 transition-all duration-300" 
+                  key={post._id}
+                  onClick={() => setViewPostId(post._id)} // ⬅️ "สั่งเปิด" Modal
+                >
+                  <img 
+                    src={post.media} 
+                    alt={post.text} 
+                    className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:opacity-90" 
+                  />
+                  {/* Overlay (Hover) */}
+                  <div className="absolute inset-0 bg-black/40 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    <span className="flex items-center gap-2 text-white font-bold text-lg">
+                      {/* Icon หัวใจ */}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                      </svg> 
+                      {post.likes ? post.likes.length : 0}
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-600 col-span-3 text-sm">User has no posts yet.</p>
+            )}
+          </div>
+        </div>
+
+      </div> 
+
+      {/* Modal ดูโพสต์ */}
+      {viewPostId && (
+        <ViewPostModal 
+          postId={viewPostId} 
+          onClose={() => setViewPostId(null)} 
+          onPostDeleted={deletePostFromProfile}
+        />
+      )}
+
+      {/* Modal Followers/Following */}
+      {modalView && (
+        <FollowListModal 
+          title={modalView === 'followers' ? 'Followers' : 'Following'} 
+          users={profile[modalView]} 
+          onClose={() => setModalView(null)} 
+        />
+      )}
+      
+    </div> 
   );
 }
+
+
+// ----------------------------------------------------------------------
+// 💡 8. COMPONENT แม่ (ดึงข้อมูล) - "ฉบับ "โปร""
+// ----------------------------------------------------------------------
+function User() {
+  const { user, loading, setUser } = useUser(); 
+
+  // ถ้า loading หรือไม่มี user ให้โชว์ loading state
+  if (loading) return <p className="text-center p-10 text-gray-400 pt-32">Loading profile...</p>;
+  // ถ้าไม่มี user ให้โชว์ No user
+  if (!user) return <p className="text-center p-10 text-gray-400 pt-32">No user data. Please login.</p>;
+
+  // "ส่ง" user และ setUser (ตัวจริง) ต่อไปให้ ProfilePage!
+  return <ProfilePage user={user} setUser={setUser} />; 
+}
+
+export default User;

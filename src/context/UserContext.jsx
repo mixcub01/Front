@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
 
     const fetchUser = async () => {
       try {
-        const res = await axios.get("https://backend-ai-uv1c.onrender.com/api/protected/profile", {
+        const res = await axios.get("http://localhost:3000/api/protected/profile", {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.data.user) setUser(res.data.user);
