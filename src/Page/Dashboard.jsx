@@ -66,7 +66,7 @@ const Dashboard = () => {
       <div className="max-w-4xl mx-auto mb-8 flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-            ADMIN DASHBOARD
+            SERVER CONNECT DASHBOARD
           </h1>
           <p className="text-slate-400 text-sm mt-1">Real-time API Monitoring System</p>
         </div>
