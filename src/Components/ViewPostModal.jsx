@@ -53,7 +53,7 @@ export default function ViewPostModal({ postId, onClose, onPostDeleted }) {
       try {
         const token = localStorage.getItem('token');
         const res = await axios.get(
-          `http://localhost:3000/api/posts/${postId}`, 
+          `https://back-yzvd.onrender.com/api/posts/${postId}`, 
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
@@ -99,7 +99,7 @@ export default function ViewPostModal({ postId, onClose, onPostDeleted }) {
 
     try {
       const res = await axios.delete(
-        `http://localhost:3000/api/posts/${postId}`, 
+        `https://back-yzvd.onrender.com/api/posts/${postId}`, 
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
 
@@ -137,7 +137,7 @@ export default function ViewPostModal({ postId, onClose, onPostDeleted }) {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:3000/api/posts/${postId}/like`, 
+        `https://back-yzvd.onrender.com/api/posts/${postId}/like`, 
         {}, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -160,7 +160,7 @@ export default function ViewPostModal({ postId, onClose, onPostDeleted }) {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(
-        `http://localhost:3000/api/posts/${postId}/comment`, 
+        `https://back-yzvd.onrender.com/api/posts/${postId}/comment`, 
         { text: newComment }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -189,7 +189,7 @@ export default function ViewPostModal({ postId, onClose, onPostDeleted }) {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(
-        `http://localhost:3000/api/posts/${postId}/comment/${commentId}`,
+        `https://back-yzvd.onrender.com/api/posts/${postId}/comment/${commentId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

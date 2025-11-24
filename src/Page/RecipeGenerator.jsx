@@ -23,7 +23,7 @@ export default function RecipeGenerator() {
       }
 
       // 💡 ยิงไปที่ Backend
-      const res = await fetch("http://localhost:3000/api/recipe/generate", {
+      const res = await fetch("https://back-yzvd.onrender.com/api/recipe/generate", {
         method: "POST",
         headers: { 
             "Content-Type": "application/json",

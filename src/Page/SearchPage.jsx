@@ -50,7 +50,7 @@ export default function SearchPage() {
         }
 
         const res = await axios.get(
-          `http://localhost:3000/api/posts/search?q=${query}`, // ⬅️ ยิง API ไปที่ Backend
+          `https://back-yzvd.onrender.com/api/posts/search?q=${query}`, // ⬅️ ยิง API ไปที่ Backend
           { headers: { Authorization: `Bearer ${token}` } }
         );
         

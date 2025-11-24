@@ -52,7 +52,7 @@ function ProfilePage({ user, setUser }) {
         const token = localStorage.getItem('token');
         // 💡 Backend Route GET /api/users/:id
         const res = await axios.get(
-          `http://localhost:3000/api/users/${userId}`,
+          `https://back-yzvd.onrender.com/api/users/${userId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
@@ -84,7 +84,7 @@ function ProfilePage({ user, setUser }) {
       const token = localStorage.getItem("token");
       
       await axios.put( 
-        `http://localhost:3000/api/users/follow/${profile._id}`, 
+        `https://back-yzvd.onrender.com/api/users/follow/${profile._id}`, 
         {}, { headers: { Authorization: `Bearer ${token}` } }
       );
       

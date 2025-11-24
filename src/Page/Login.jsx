@@ -32,14 +32,14 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/login", {
+      const res = await axios.post("https://back-yzvd.onrender.com/api/auth/login", {
         username,
         password,
       });
       const token = res.data.token;
       localStorage.setItem("token", token); 
 
-      const me = await axios.get("http://localhost:3000/api/protected/me", {
+      const me = await axios.get("https://back-yzvd.onrender.com/api/protected/me", {
         headers: { Authorization: `Bearer ${token}` }
       });
 

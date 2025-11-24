@@ -65,7 +65,7 @@ export default function NotificationModal({ onClose, initialUnreadCount }) {
             try {
                 const token = localStorage.getItem('token');
                 // ยิงไป Backend ที่เราสร้างไว้
-                const res = await axios.get('http://localhost:3000/api/notifications', {
+                const res = await axios.get('https://back-yzvd.onrender.com/api/notifications', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 
@@ -93,7 +93,7 @@ export default function NotificationModal({ onClose, initialUnreadCount }) {
         try {
             const token = localStorage.getItem('token');
             // ยิง PUT ไปบอก Backend ว่าอ่านแล้วทั้งหมด
-            await axios.put('http://localhost:3000/api/notifications/read', {}, {
+            await axios.put('https://back-yzvd.onrender.com/api/notifications/read', {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

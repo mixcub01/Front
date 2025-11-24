@@ -44,7 +44,7 @@ export default function Home() {
           return;
         }
         
-        const res = await axios.get("http://localhost:3000/api/posts", {
+        const res = await axios.get("https://back-yzvd.onrender.com/api/posts", {
           headers: { Authorization: `Bearer ${token}` }
         });
         

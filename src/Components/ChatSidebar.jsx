@@ -30,7 +30,7 @@ export default function ChatSidebar({ onSelectUser, selectedUserId }) {
             try {
                 const token = localStorage.getItem('token');
             
-                const res = await axios.get('http://localhost:3000/api/users/all', {
+                const res = await axios.get('https://back-yzvd.onrender.com/api/users/all', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 

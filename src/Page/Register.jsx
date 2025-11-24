@@ -77,7 +77,7 @@ function Register() {
 
     try {
       // 🔥 ยิงไป Backend
-      const response = await axios.post('http://localhost:3000/api/auth/register', formData);
+      const response = await axios.post('https://back-yzvd.onrender.com/api/auth/register', formData);
       
       setSuccessMsg(response.data.message || "Account created successfully!");
       setFormData({ username: '', fullName: '', email: '', password: '' }); 

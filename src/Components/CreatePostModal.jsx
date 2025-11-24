@@ -70,7 +70,7 @@ export default function CreatePostModal({ onClose, onPostCreated }) {
       const token = localStorage.getItem('token');
       
       const res = await axios.post(
-        "http://localhost:3000/api/posts", 
+        "https://back-yzvd.onrender.com/api/posts", 
         formData, 
         { headers: { 
             Authorization: `Bearer ${token}`,

@@ -18,7 +18,7 @@ const Dashboard = () => {
   const [logs, setLogs] = useState([]);
 
   // URL ของ Backend มึง
-  const API_URL = "http://localhost:3000/api/health";
+  const API_URL = "https://back-yzvd.onrender.com/api/health";
 
   const addLog = (message, type = 'info') => {
     const time = new Date().toLocaleTimeString();
