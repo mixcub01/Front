@@ -80,7 +80,7 @@ export default function ChatSidebar({ onSelectUser, selectedUserId }) {
                                 </p>
                                 <p className={`text-xs ${selectedUserId === user._id ? 'text-sky-200' : 'text-gray-400'}`}>
                                     Last message...
-                                </p>
+                                </p> 
                             </div>
                         </motion.div>
                     ))

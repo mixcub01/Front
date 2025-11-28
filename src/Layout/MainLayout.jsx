@@ -24,19 +24,16 @@ export default function MainLayout() {
   const mobileMenuRef = useRef(null);
 
   const [isNotiModalOpen, setIsNotiModalOpen] = useState(false); 
-  // ⚠️ State จำลอง
   const [unreadCount, setUnreadCount] = useState(3); 
   
-  // Handle Scroll (เช็คว่าเลื่อนจอหรือยัง เพื่อปรับ Header)
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 10);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []); 
 
-  // Handle Click Outside (ปิดเมนูเมื่อคลิกที่อื่น)
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -51,8 +48,6 @@ export default function MainLayout() {
       ) {
         setIsMobileMenuOpen(false);
       }
-      // 💡 Logic ปิด Noti Modal
-      // (Mocked: NotificationModal ต้องถูกปิดด้วย)
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -78,73 +73,74 @@ export default function MainLayout() {
     setIsMobileMenuOpen(false);
   };
 
-  // ✨ Styles ขั้นเทพ
+  // ✨ Styles: Nav Link แบบ Pill (เม็ดยา) ดู Modern Retro
   const navLinkClass = ({ isActive }) => `
-    relative px-3 py-2 text-sm font-medium transition-all duration-300
+    relative px-4 py-2 text-sm font-bold transition-all duration-300 rounded-full
     ${isActive 
-      ? 'text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]' 
-      : 'text-slate-400 hover:text-white hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]'}
+      ? 'bg-[#ffc857] text-[#33691e] shadow-md transform scale-105' 
+      : 'text-[#33691e]/70 hover:text-[#33691e] hover:bg-[#33691e]/5'}
   `;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0f172a]"> {/* พื้นหลัง Dark Slate */}
+    <div className="flex flex-col min-h-screen bg-[#ece4d4]"> {/* พื้นหลังครีม */}
       
-      {/* 🔥 Header เทพเจ้า Glassmorphism */}
-      <header className={`
+      {/* 🔥 Header Glassmorphism + Animation Slide Down */}
+      <motion.header 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
+        className={`
           fixed top-0 w-full z-50 
-          transition-all duration-500 ease-in-out
-          border-b border-white/5
+          transition-all duration-300 ease-in-out
+          border-b border-[#33691e]/5
           ${scrolled 
-            ? 'bg-[#0f172a]/80 backdrop-blur-xl py-3 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]' 
-            : 'bg-transparent py-5'}
+            ? 'bg-[#ece4d4]/90 backdrop-blur-md py-3 shadow-lg shadow-[#33691e]/5' 
+            : 'bg-[#ece4d4]/50 backdrop-blur-sm py-4'}
       `}>
         <div className="max-w-7xl mx-auto px-4 md:px-8 flex flex-row justify-between items-center">
             
-            {/* 1. LOGO (มีแสงเรืองๆ) */}
+            {/* 1. LOGO */}
             <Link to="/" className="flex-shrink-0 group relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-sky-500 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-[#ffc857] to-[#33691e] rounded-full blur opacity-0 group-hover:opacity-40 transition duration-500"></div>
               <img 
                 src={logoImage} 
                 alt="logo" 
-                className={`relative rounded-full transition-all duration-500 object-cover border-2 border-white/10
+                className={`relative rounded-full transition-all duration-500 object-cover border-2 bg-[#f0cf8e] border-[#33691e]/10 shadow-sm
                   ${scrolled ? 'w-10 h-10' : 'w-12 h-12'}
                 `} 
               />
             </Link>
 
-            {/* 2. Desktop Search Bar (Cyberpunk Style) */}
+            {/* 2. Desktop Search Bar */}
             <div className="hidden md:block flex-1 max-w-md mx-8 relative group" ref={searchRef}> 
-              {/* Glow Effect */}
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-sky-500 via-blue-500 to-purple-600 rounded-full blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
-              
-              <form onSubmit={handleSearch} className="relative">
+              <form onSubmit={handleSearch} className="relative transform transition-all duration-300 group-hover:scale-[1.02]">
                 <input 
                   type="text"
                   placeholder="Search inspiration..."
-                  className="w-full py-2.5 pl-5 pr-12 rounded-full bg-[#1e293b] text-gray-200 placeholder-gray-500 border border-white/10 focus:outline-none focus:bg-[#0f172a] transition-all duration-300"
+                  className="w-full py-2.5 pl-5 pr-12 rounded-full bg-[#ffc857] text-[#33691e] placeholder-[#33691e]/50 border-2 border-transparent focus:border-[#33691e]/20 focus:outline-none transition-all duration-300 shadow-inner"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-sky-500/10 rounded-full text-sky-400 hover:text-white hover:bg-sky-500 transition-all duration-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-[#33691e] rounded-full text-[#ffc857] hover:bg-[#264f16] hover:scale-110 transition-all duration-300 shadow-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </button>
               </form>
 
-              {/* Search Suggestions Dropdown */}
+              {/* Suggestions Dropdown */}
               <AnimatePresence>
                 {searchQuery && (
                   <motion.div
-                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full left-0 w-full mt-2 z-50"
+                    className="absolute top-full left-0 w-full mt-3 z-50"
                   >
-                    <div className="bg-[#1e293b]/95 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="bg-[#ece4d4] border border-[#33691e]/10 rounded-2xl shadow-2xl overflow-hidden text-[#33691e]">
                         <SearchSuggestions 
-                        suggestions={suggestions} 
-                        loading={loading}
-                        onSelect={() => setSearchQuery("")}
+                            suggestions={suggestions} 
+                            loading={loading}
+                            onSelect={() => setSearchQuery("")}
                         />
                     </div>
                   </motion.div>
@@ -153,49 +149,48 @@ export default function MainLayout() {
             </div>
 
             {/* 3. Desktop Nav Links */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden md:flex items-center gap-2">
               <NavLink to="/" className={navLinkClass}>Home</NavLink>
               <NavLink to="/Recipe" className={navLinkClass}>Recipe</NavLink>
               <NavLink to="/chat" className={navLinkClass}>Chat</NavLink>
-              <NavLink to="/dashboard" className={navLinkClass}>About</NavLink>
+              <NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink>
             </nav>
 
-            {/* 4. Desktop Auth/Noti Button Group */}
+            {/* 4. Desktop Auth/Noti Group */}
             <div className="hidden md:flex w-auto ml-6 items-center gap-4">
               
               {user ? (
-                // 💡 แก้ไข: หุ้มด้วย DIV แทน Fragment เพื่อแก้บั๊ก JSX
                 <div className="flex items-center gap-4"> 
-                    {/* AVATAR LINK (1st item) */}
+                    {/* AVATAR */}
                     <Link to="/User" className="relative group">
-                        <img 
-                            src={user.avatar || 'https://i.pravatar.cc/150?img=49'} 
-                            alt={user.username} 
-                            className="w-8 h-8 rounded-full object-cover ring-2 ring-sky-500/0 group-hover:ring-sky-500/50 transition-all duration-300" 
-                        />
+                        <div className="p-0.5 rounded-full border-2 border-[#ffc857] group-hover:border-[#33691e] transition-colors">
+                            <img 
+                                src={user.avatar || 'https://i.pravatar.cc/150?img=49'} 
+                                alt={user.username} 
+                                className="w-8 h-8 rounded-full object-cover" 
+                            />
+                        </div>
                     </Link>
 
-                    {/* NOTIFICATION BELL (2nd item) */}
+                    {/* NOTIFICATION BELL */}
                     <div className="relative">
                       <button 
                         onClick={() => setIsNotiModalOpen(true)}
-                        className="p-2 rounded-full text-slate-400 hover:text-sky-400 hover:bg-white/10 transition-colors relative"
-                        title="Notifications"
+                        className="p-2 rounded-full text-[#33691e] hover:bg-[#ffc857] hover:text-[#33691e] transition-all duration-300 relative"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                         
-                        {/* Badge Count (ตัวเลขสีแดง) */}
                         {unreadCount > 0 && (
-                          <span className="absolute top-0 right-0 block h-3 w-3 rounded-full ring-2 ring-gray-900 bg-rose-500 text-xs text-white flex items-center justify-center p-2">
-                            <span className="sr-only">{unreadCount} unread notifications</span>
+                          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#ffc857] text-[10px] font-bold text-[#33691e] ring-2 ring-[#ece4d4]">
+                            {unreadCount}
                           </span>
                         )}
                       </button>
                     </div>
                     
-                    {/* SIGN OUT BUTTON (3rd item) */}
+                    {/* SIGN OUT BUTTON */}
                     <button 
-                        className="px-4 py-2 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 text-white text-sm font-semibold shadow-lg shadow-rose-500/20 hover:shadow-rose-500/40 hover:-translate-y-0.5 transition-all duration-300"
+                        className="px-5 py-2 rounded-full bg-[#33691e] text-[#ece4d4] text-sm font-bold shadow-lg hover:bg-[#264f16] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
                         onClick={handleLogout}
                     >
                         Sign Out
@@ -204,40 +199,37 @@ export default function MainLayout() {
               ) : (
                 <Link 
                     to="/auth/login"
-                    className="px-6 py-2 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 text-white font-semibold shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 hover:-translate-y-0.5 transition-all duration-300"
+                    className="px-6 py-2 rounded-full bg-[#33691e] text-[#ece4d4] font-bold shadow-lg hover:bg-[#264f16] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
                 >
                   Sign In
                 </Link>
               )}
             </div>
 
-            {/* 🔥🔥🔥 Mobile Action Group (Notification + Burger) 🔥🔥🔥 */}
-            <div className="flex items-center md:hidden gap-2">
-              
-              {/* ✅ 5.1 Mobile Notification Bell (เพิ่มใหม่ตรงนี้!) */}
+            {/* Mobile Action Group */}
+            <div className="flex items-center md:hidden gap-3">
               {user && (
                 <button 
                   onClick={() => setIsNotiModalOpen(true)}
-                  className="p-2 rounded-full text-slate-400 hover:text-white transition-colors relative"
+                  className="p-2 rounded-full text-[#33691e] bg-[#ffc857]/20 hover:bg-[#ffc857] transition-colors relative"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                     <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                   </svg>
-                  {/* Mobile Badge */}
                   {unreadCount > 0 && (
-                    <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-[#0f172a]"></span>
+                    <span className="absolute top-0 right-0 h-2.5 w-2.5 rounded-full bg-[#ffc857] ring-2 ring-[#ece4d4]"></span>
                   )}
                 </button>
               )}
 
-              {/* 5.2 Mobile Burger Button */}
+              {/* Mobile Burger */}
               <button
                 ref={burgerButtonRef}
-                className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors relative z-50"
+                className="p-2 rounded-lg text-[#33691e] hover:bg-[#33691e]/10 transition-colors relative z-50"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   {isMobileMenuOpen ? (
                     <><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></>
                   ) : (
@@ -249,7 +241,7 @@ export default function MainLayout() {
             
         </div>
 
-        {/* 6. Mobile Menu (Glassmorphism Dropdown) */}
+        {/* 6. Mobile Menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
@@ -257,34 +249,43 @@ export default function MainLayout() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="md:hidden absolute top-full left-0 w-full bg-[#0f172a]/95 backdrop-blur-xl border-b border-white/10 shadow-2xl overflow-hidden"
+              transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] }}
+              className="md:hidden absolute top-full left-0 w-full bg-[#ece4d4] border-b border-[#33691e]/10 shadow-2xl overflow-hidden"
             >
               <div className="p-6 flex flex-col gap-6">
                 {/* Mobile Search */}
                 <form onSubmit={handleSearch} className="relative">
                     <input 
                     type="text"
-                    placeholder="Search posts..."
-                    className="w-full py-3 px-5 rounded-xl bg-[#1e293b] text-white border border-white/10 focus:border-sky-500 focus:outline-none"
+                    placeholder="Search..."
+                    className="w-full py-3 px-5 rounded-2xl bg-[#ffc857] text-[#33691e] placeholder-[#33691e]/50 focus:outline-none focus:ring-2 focus:ring-[#33691e]/20"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                    <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#33691e] hover:scale-110 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </button>
                 </form>
 
-                {/* Mobile Nav Links */}
                 <nav className="flex flex-col gap-2">
-                  {['Home', 'Recipe', 'Chat', 'About', 'Me'].map((item) => (
+                  {/* ✅ แก้ไข: เปลี่ยน About เป็น Dashboard */}
+                  {['Home', 'Recipe', 'Chat', 'Dashboard', 'Me'].map((item) => (
                       <NavLink 
                           key={item}
-                          to={item === 'Home' ? '/' : item === 'Me' ? '/User' : `/${item}`} 
+                          // ✅ แก้ไข: Mapping Path ให้ตรง
+                          to={
+                            item === 'Home' ? '/' : 
+                            item === 'Me' ? '/User' : 
+                            item === 'Dashboard' ? '/dashboard' : 
+                            item === 'Chat' ? '/chat' :
+                            `/${item}`
+                          } 
                           onClick={handleMobileLinkClick}
                           className={({ isActive }) => `
-                              px-4 py-3 rounded-xl text-lg font-medium transition-all
-                              ${isActive ? 'bg-sky-500/10 text-sky-400' : 'text-slate-400 hover:text-white hover:bg-white/5'}
+                              px-5 py-3 rounded-xl text-lg font-black tracking-wide transition-all
+                              ${isActive 
+                                ? 'bg-[#33691e] text-[#ffc857] shadow-md translate-x-2' 
+                                : 'text-[#33691e]/60 hover:text-[#33691e] hover:bg-[#33691e]/5'}
                           `}
                       >
                           {item}
@@ -292,11 +293,10 @@ export default function MainLayout() {
                   ))}
                 </nav>
 
-                {/* Mobile Auth Buttons */}
-                <div className="pt-4 border-t border-white/10">
+                <div className="pt-4 border-t border-[#33691e]/10">
                     {user ? (
                     <button 
-                        className="w-full py-3 rounded-xl bg-rose-600 text-white font-bold shadow-lg active:scale-95 transition-transform"
+                        className="w-full py-3 rounded-xl bg-[#33691e] text-[#ece4d4] font-bold shadow-lg active:scale-95 transition-transform"
                         onClick={handleLogout}
                     >
                         Sign Out
@@ -304,7 +304,7 @@ export default function MainLayout() {
                     ) : (
                     <Link 
                         to="/auth/login"
-                        className="block w-full py-3 text-center rounded-xl bg-sky-600 text-white font-bold shadow-lg active:scale-95 transition-transform"
+                        className="block w-full py-3 text-center rounded-xl bg-[#33691e] text-[#ece4d4] font-bold shadow-lg active:scale-95 transition-transform"
                         onClick={handleMobileLinkClick}
                     >
                         Sign In
@@ -315,31 +315,32 @@ export default function MainLayout() {
             </motion.div>
           )}
         </AnimatePresence>
-      </header>
+      </motion.header>
 
       {/* Main Content */}
-      <main className="flex-1 pt-20"> {/* เว้นที่ให้ Header แบบ Fixed */}
+      <main className="flex-1 pt-24"> 
         <Outlet />
       </main>
 
-      {/* Footer Minimalist */}
-      <footer className="bg-[#0f172a] border-t border-white/5 text-slate-500 py-8 text-center">
-        <div className="max-w-7xl mx-auto px-4">
-            <p className="text-sm font-light tracking-wide">
-                © 2025 <span className="text-sky-500 font-semibold">Mix-Cub</span>. Designed for the Future.
+      {/* Footer */}
+      <footer className="bg-[#ece4d4] border-t border-[#33691e]/10 text-[#33691e]/60 py-10 text-center">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-2">
+            <div className="w-10 h-1 bg-[#ffc857] rounded-full mb-2"></div>
+            <p className="text-sm font-medium tracking-wide">
+                © 2025 <span className="text-[#33691e] font-black">Mix-Cub</span>. 
             </p>
+            <p className="text-xs opacity-70">Designed for the Future.</p>
         </div>
       </footer>
       
-      {/* 💡 Modal แจ้งเตือน (ต้องวางไว้ข้างนอก Layout เพื่อให้ลอยเหนือทุกอย่าง) */}
+      {/* Modal Notification */}
       <AnimatePresence>
         {isNotiModalOpen && (
           <NotificationModal 
             onClose={() => {
               setIsNotiModalOpen(false);
-              setUnreadCount(0); // 💡 เมื่อปิด Modal ถือว่าอ่านแล้ว
+              setUnreadCount(0); 
             }} 
-            // ⚠️ ต้องส่ง unreadCount (State) ไปที่ Modal ด้วย
             initialUnreadCount={unreadCount} 
           />
         )}
